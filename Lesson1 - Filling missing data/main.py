@@ -6,9 +6,11 @@ from sklearn.impute import SimpleImputer  # For handling missing values in the d
 
 # Set the directory where the script is located to make file path management easier
 DIR = os.path.dirname(os.path.realpath(__file__))
+# Move one folder back by getting the parent directory
+parent_dir = os.path.dirname(DIR)
 
 # Load the dataset from the CSV file. The delimiter is set to ';' since it is typically used in CSV files from some regions
-dataset = pd.read_csv(f'{DIR}/science_vlogs_brazil.csv', delimiter=';')
+dataset = pd.read_csv(fr'{parent_dir}/datas/science_vlogs_brazil.csv', delimiter=';')
 
 # Get all values from the dataset (rows and columns) and ignore the column names
 X = dataset.iloc[:,:].values

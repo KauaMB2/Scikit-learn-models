@@ -9,9 +9,11 @@ from sklearn.preprocessing import StandardScaler  # For scaling the data to have
 
 # Set the directory where the script is located to make file path management easier
 DIR = os.path.dirname(os.path.realpath(__file__))
+# Move one folder back by getting the parent directory
+parent_dir = os.path.dirname(DIR)
 
 # Load the dataset from the CSV file. The delimiter is set to ';' since it's commonly used in certain regions.
-dataset = pd.read_csv(f'{DIR}/admission.csv', delimiter=';')
+dataset = pd.read_csv(f'{parent_dir}/datas/admission.csv', delimiter=';')
 
 # Load all rows and all columns of the dataset except the last column (which is the target variable 'Y')
 # The `iloc` selects the data by position: `:-1` excludes the last column.
