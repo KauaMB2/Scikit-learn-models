@@ -1,5 +1,49 @@
+# Basic concepts:
+### Classification and regression
+**Classification** is a supervised learning task where the goal is to predict a category or class label for each input based on the given data. In classification, the target variable (also called the dependent variable or output) consists of discrete labels or categories.
+ * Problem type: Discrete outcomes (categories or classes).
+ * Target variable: Categorical (e.g., labels such as "Yes" or "No", "Cat" or "Dog", etc.).
+ * Output: A class or category label (often represented as a number or text).
+ * Examples of Classification:
+    * Spam detection: Classifying emails as "Spam" or "Not Spam".
+    * Image recognition: Identifying whether an image contains a "Cat", "Dog", or "Bird".
+    * Medical diagnosis: Predicting whether a patient has a "Disease" or "No Disease" based on medical tests.
+    * Credit scoring: Classifying a person as "High Risk" or "Low Risk" based on financial data.
+ * Common Classification Algorithms:
+    * Logistic Regression
+    * Decision Trees
+    * Support Vector Machines (SVM)
+    * Random Forest
+    * K-Nearest Neighbors (KNN)
+    * Neural Networks (e.g., CNN for image classification)
 
-# Lessons 1 - 3:
+**Regression** is another supervised learning task where the goal is to predict a continuous numerical value based on input data. In regression, the target variable is continuous, meaning it can take any real number within a range.
+ * Problem type: Continuous outcomes (numeric values).
+ * Target variable: Numerical (e.g., predicting house prices, temperature, stock prices).
+ * Output: A continuous numerical value (e.g., a price, temperature, etc.).
+ * Examples of Regression:
+    * House price prediction: Predicting the price of a house based on features such as size, location, and the number of rooms.
+    * Stock price prediction: Predicting the future price of a stock.
+    * Temperature prediction: Predicting the temperature for the next day based on historical weather data.
+    * Sales forecasting: Predicting future sales based on past sales data.
+* Common Regression Algorithms:
+    * Linear Regression
+    * Decision Trees
+    * Random Forest
+    * Support Vector Regression (SVR)
+    * Neural Networks (e.g., deep learning for regression tasks)
+
+**Summary table**
+
+| **Aspect**            | **Classification**                          | **Regression**                           |
+|-----------------------|---------------------------------------------|------------------------------------------|
+| **Target Variable**   | Categorical (discrete classes)              | Continuous (real values)                 |
+| **Output**            | A class label (e.g., "Yes" or "No")         | A real number (e.g., 25.5, 300, etc.)    |
+| **Example Problem**   | Spam detection, Disease diagnosis          | Price prediction, Temperature forecast   |
+| **Evaluation Metrics**| Accuracy, Precision, Recall, F1-score      | Mean Absolute Error (MAE), Mean Squared Error (MSE), R-squared |
+| **Output Type**       | Category (Class label)                     | Real number (numeric)                   |
+
+
 ### Categorial variables and numerical variables
 **1. Categorical Variables (Qualitative Data)**
 </br>
@@ -67,9 +111,6 @@ The transform method modifies the input data based on the parameters learned dur
  - Scaling: In the case of feature scaling (e.g., using `StandardScaler`), transform applies the scaling formula (using the mean and standard deviation learned during fit) to the data.
  - Encoding: For categorical encoding (e.g., using `OneHotEncoder`), transform converts the input features into the encoded format based on the learned mapping.
  - Dimensionality Reduction: In algorithms like PCA (Principal Component Analysis), transform reduces the dimensions of the data using the principal components learned during fit.
-
-### One-hot encoder concept
-**One-hot encoding** is a technique used in machine learning to convert categorical variables into numerical variables that can be processed by machine learning algorithms. It works by creating a new binary feature for each category in the categorical variable. For example, if we have a categorical variable with three categories A, B, and C, the one-hot encoded version would be a binary vector [1, 0, 0] for category A, [0, 1, 0] for category B, and [0, 0, 1] for category C.
 ```python
 from sklearn.preprocessing import OneHotEncoder
 # Example data
@@ -88,4 +129,115 @@ encoder = OneHotEncoder()
 encoder.fit(data)
 # Transform applies the one-hot encoding
 encoded_data = encoder.transform(data)
+```
+### One-hot encoder concept
+**One-hot encoding** is a technique used in machine learning to convert categorical variables into numerical variables that can be processed by machine learning algorithms. It works by creating a new binary feature for each category in the categorical variable. For example, if we have a categorical variable with three categories A, B, and C, the one-hot encoded version would be a binary vector [1, 0, 0] for category A, [0, 1, 0] for category B, and [0, 0, 1] for category C.
+The dummy variable trap is a situation that occurs when using dummy variables (also known as one-hot encoding) in regression models, which leads to multicollinearity. This can cause problems when trying to interpret or train a machine learning model, particularly in linear regression models.
+
+For example, consider a feature `Color` with three categories: Red, Blue, and Green. Using one-hot encoding, we can represent this feature with three new columns:
+ * Color_Red
+ * Color_Blue
+ * Color_Green
+
+The values for each row would be 1 or 0, depending on which category the data point belongs to.
+
+**What Causes the Dummy Variable Trap?**
+
+The dummy variable trap happens when you include all the dummy variables for a categorical feature in the regression model. This leads to perfect multicollinearity because one of the dummy variables can be perfectly predicted from the others. In other words, there is redundancy in the data.
+
+For example, in the Color example above, if you include all three dummy variables (Color_Red, Color_Blue, and Color_Green), you don't need all of them because knowing two of the dummy variables is enough to determine the third one.
+
+ * If `Color_Red = 1` and `Color_Blue = 0`, you know the color must be <span style="color: red; font-weight: bold;">Red</span>.
+ * If `Color_Red = 0` and `Color_Blue = 1`, you know the color must be <span style="color: blue; font-weight: bold;">Blue</span>.
+ * If `Color_Red = 0` and `Color_Blue = 0`, the color must be <span style="color: green; font-weight: bold;">Green</span>.
+
+Since the third variable (Color_Green) can be inferred from the others, it's unnecessary to include it in the model.
+
+Why is it a Problem?
+When all dummy variables are included in a regression model, it introduces multicollinearity—a situation where two or more predictor variables are highly correlated. This violates the assumption of independence between the predictors, leading to:
+
+Instability in the model: The model may produce unreliable or biased estimates for the coefficients of the features.
+Inflated variance: It becomes harder to assess the significance of each predictor variable, as the effect of one predictor may be mixed with that of others.
+### Lesson 4 - Linear Regression
+**Linear regression** is a statistical method used for modeling the relationship between one or more independent variables (also called features or predictors) and a dependent variable (also called the target or response variable) by fitting a linear equation to observed data. It is one of the simplest and most widely used algorithms in machine learning and statistics for predictive modeling.
+</br>
+**Formula: F(x) = ax+b**
+```python
+from sklearn.linear_model import LinearRegression
+import numpy as np
+# Example data: Predict y based on x
+X = np.array([[10], [22], [34], [46], [58]])  # Independent variable (feature)
+y = np.array([1, 2, 3, 4, 5])  # Dependent variable (target)
+# Create a Linear Regression model
+model = LinearRegression()
+# Fit the model (train it on the data)
+model.fit(X, y)
+# Predict using the trained model
+y_pred = model.predict(X)
+# Output the coefficients
+print("Intercept:", model.intercept_)
+print("Coefficient:", model.coef_)
+# Print predictions
+print("Predicted values:", y_pred)
+```
+**Example of linear regression graph**
+![Project Logo](readmeImgs/linear_regression.png)
+
+### Lesson 5 - Multiple Linear Regression
+**Multiple Linear Regression (MLR)** is an extension of simple linear regression that models the relationship between two or more independent variables (predictors) and a dependent variable (response). The goal of multiple linear regression is to predict the dependent variable using a linear combination of the independent variables.
+
+The formula for Multiple Linear Regression is:
+$$
+Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_n X_n + \epsilon
+$$
+
+Where:
+- \( Y \) is the dependent variable (target).
+- \( X_1, X_2, \dots, X_n \) are the independent variables (features).
+- \( \beta_0 \) is the intercept (bias).
+- \( \beta_1, \beta_2, \dots, \beta_n \) are the coefficients (weights) of the independent variables.
+- \( \epsilon \) is the error term (residual).
+```python
+# Import necessary libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+# Example data: House prices dataset
+# Features: Number of rooms, Size (square feet)
+# Target: House price in thousands of dollars
+data = {
+    'Rooms': [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+    'Size': [500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400],
+    'Price': [150, 200, 250, 300, 350, 400, 450, 500, 550, 600]
+}
+# Convert data to DataFrame
+df = pd.DataFrame(data)
+# Define independent variables (X) and dependent variable (y)
+X = df[['Rooms', 'Size']]  # Features
+y = df['Price']  # Target
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Initialize the Linear Regression model
+model = LinearRegression()
+# Train the model using training data
+model.fit(X_train, y_train)
+# Make predictions using the test set
+y_pred = model.predict(X_test)
+# Model coefficients and intercept
+print("Model coefficients:", model.coef_)
+print("Model intercept:", model.intercept_)
+# Calculate Mean Squared Error and R-squared
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print(f"Mean Squared Error (MSE): {mse}")
+print(f"R-squared: {r2}")
+# Plotting actual vs predicted values
+plt.scatter(y_test, y_pred)
+plt.xlabel('Actual Price')
+plt.ylabel('Predicted Price')
+plt.title('Actual vs Predicted House Prices')
+plt.show()
 ```
