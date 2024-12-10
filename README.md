@@ -190,13 +190,6 @@ The formula for Multiple Linear Regression is:
 $$
 Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_n X_n + \epsilon
 $$
-
-Where:
-- \( Y \) is the dependent variable (target).
-- \( X_1, X_2, \dots, X_n \) are the independent variables (features).
-- \( \beta_0 \) is the intercept (bias).
-- \( \beta_1, \beta_2, \dots, \beta_n \) are the coefficients (weights) of the independent variables.
-- \( \epsilon \) is the error term (residual).
 ```python
 # Import necessary libraries
 import numpy as np
@@ -241,3 +234,22 @@ plt.ylabel('Predicted Price')
 plt.title('Actual vs Predicted House Prices')
 plt.show()
 ```
+### Lesson 6
+**What is Backward Elimination?**
+
+Backward elimination is a **feature selection technique** used in regression modeling to improve the model by systematically removing the least significant features (predictor variables). It’s a process to optimize the model by reducing its complexity, improving its interpretability, and sometimes enhancing its performance. The goal is to remove features that don't contribute meaningfully to predicting the dependent variable (target).
+
+**Steps in Backward Elimination:**
+
+1. Start with all features: You begin with all predictor variables in your model (i.e., all features are included).
+2. Fit the model: You fit a regression model (such as Linear Regression) using all the features.
+3. Check p-values: After fitting the model, you check the p-values of all the coefficients (parameters) associated with the features. These p-values represent the statistical significance of each feature in explaining the variability of the target variable.
+4. Remove the least significant feature: If a feature has a high p-value (above a predetermined threshold), it suggests that this feature is not statistically significant in predicting the target. In this case, you remove that feature from the model.
+5. Repeat the process: You fit the model again with the reduced set of features and repeat steps 3 and 4 until all remaining features have p-values lower than the threshold (usually 0.05).
+6. Stop when all features are significant: The process stops when all remaining features have p-values below the significance level (threshold).
+
+**What is a p-value?**
+
+The p-value is a measure used in statistical hypothesis testing to determine whether a feature in a regression model is statistically significant.
+ * A low p-value (typically less than 0.05) indicates that the feature is likely to be significant in explaining the target variable.
+ * A high p-value suggests that the feature is not statistically significant and doesn't contribute meaningfully to the model. A common threshold for significance is 0.05, but this can vary depending on the context.
