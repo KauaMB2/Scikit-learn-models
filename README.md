@@ -181,7 +181,7 @@ print("Coefficient:", model.coef_)
 print("Predicted values:", y_pred)
 ```
 **Example of linear regression graph**
-![Project Logo](readmeImgs/linear_regression.png)
+![Linear regression](readmeImgs/linearregression_graph.png)
 
 ### Lesson 5 - Multiple Linear Regression
 **Multiple Linear Regression (MLR)** is an extension of simple linear regression that models the relationship between two or more independent variables (predictors) and a dependent variable (response). The goal of multiple linear regression is to predict the dependent variable using a linear combination of the independent variables.
@@ -253,3 +253,62 @@ Backward elimination is a **feature selection technique** used in regression mod
 The p-value is a measure used in statistical hypothesis testing to determine whether a feature in a regression model is statistically significant.
  * A low p-value (typically less than 0.05) indicates that the feature is likely to be significant in explaining the target variable.
  * A high p-value suggests that the feature is not statistically significant and doesn't contribute meaningfully to the model. A common threshold for significance is 0.05, but this can vary depending on the context.
+
+**What is Polynomial Regression?**
+
+**Polynomial Regression** is an extension of linear regression that models the relationship between the independent variable and the dependent variable as an **n-th degree polynomial**. It is useful when the data shows a non-linear relationship.
+
+**Formula:**
+
+For a second-degree (quadratic) polynomial regression, the formula is:
+
+![Polynomial regression model](readmeImgs/polynomialregression_formula.svg)
+
+
+Where \(X^n\) represents the \(n\)-th degree polynomial term. In practice, we often use **PolynomialFeatures** to transform the input features and fit the model accordingly.
+
+**Example of polynomial regression graph:**
+![Polynomial regression model](readmeImgs/polynomialregression_graph.png)
+
+**Steps:**
+1. Generate some data: We will simulate data that follows a quadratic relationship.
+2. Transform the data to polynomial features: Using PolynomialFeatures from sklearn.preprocessing, we will transform the input data into polynomial features.
+3. Fit a linear regression model: We will then use a linear regression model to fit the transformed data.
+4. Visualize the results.
+
+**Example of Polynomial Regression in Python (using Scikit-Learn):**
+
+```python
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Sample data (quadratic relationship)
+X = np.array([[1], [2], [3], [4], [5]])  # Independent variable
+y = np.array([1, 4, 9, 16, 25])           # Dependent variable (y = x^2)
+
+# Transform the data to include polynomial features
+poly = PolynomialFeatures(degree=2)
+X_poly = poly.fit_transform(X)
+
+# Create and fit the model
+model = LinearRegression()
+model.fit(X_poly, y)
+
+# Predicting
+y_pred = model.predict(X_poly)
+
+# Plotting the results
+plt.scatter(X, y, color='blue', label='Original data')
+plt.plot(X, y_pred, color='red', label='Polynomial fit')
+plt.title('Polynomial Regression (Degree = 2)')
+plt.xlabel('X')
+plt.ylabel('y')
+plt.legend()
+plt.show()
+
+# Output the coefficients
+print("Intercept:", model.intercept_)
+print("Coefficients:", model.coef_)
+```
