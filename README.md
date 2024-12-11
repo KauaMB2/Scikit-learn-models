@@ -312,3 +312,36 @@ plt.show()
 print("Intercept:", model.intercept_)
 print("Coefficients:", model.coef_)
 ```
+
+**Support vector regression(SVR)**
+
+Support Vector Regression (SVR) is a machine learning algorithm used for regression tasks, where the goal is to predict a continuous(linear) value based on input data. It's part of the family of Support Vector Machines (SVM), which is typically known for its application in classification problems. However, SVR extends SVM concepts to regression, where instead of classifying data points into categories, we try to predict numerical values.
+
+In typical regression, the goal is to find a function that best fits the data, minimizing the difference between the predicted values and the actual values (known as the error). For example, imagine you have data that represents the relationship between the years of experience and salary. The task is to predict someone's salary based on their years of experience.
+
+In SVR, the algorithm aims to find a function (or curve) that fits the data while allowing some margin of error. This means SVR does not try to perfectly fit the data. Instead, it allows some errors, but only errors that fall outside a specified margin of tolerance (epsilon, ε). Errors within this margin are acceptable, and no penalty is applied.
+
+**Key components of SVR:**
+ * Epsilon(ε): This is the margin of error. The model tries to fit a line (or hyperplane) that predicts values within this margin. Any data points that fall within this margin are considered correct predictions, and no penalty is applied for them.
+ * Support vectors: These are the data points that lie closest to the margin boundary. The support vectors are crucial because they define the boundary of the epsilon-tube and help the model determine the optimal function to use for prediction. These are the "most important" points, and the rest of the data points are not directly involved in defining the regression line or hyperplane.
+ * Margin: This refers to the region around the predicted function where error is allowed. Points inside this margin do not contribute to the error, as long as their predicted value is within the epsilon-tube.
+
+In its simplest form, SVR with a linear kernel tries to fit a straight line to the data. The objective is to find a line that fits most of the data points while allowing some points to lie outside the margin if needed.
+
+**How does SVR works?**
+
+In its simplest form, SVR with a linear kernel tries to fit a straight line to the data. The objective is to find a line that fits most of the data points while allowing some points to lie outside the margin if needed.
+
+1. The model first selects a line (or hyperplane in higher dimensions) that approximates the target values.
+2. Then, it defines a margin (or epsilon-tube) around this line. Any points that are inside this margin (i.e., have errors smaller than ε) are not penalized.
+3. The remaining points that fall outside this margin are considered to have a large error and will influence the model’s parameters, aiming to reduce the error.
+
+**Non-Linear Regression with Kernels:**
+
+Sometimes, the relationship between the input features and the output variable is not linear. In such cases, SVR can use kernels to transform the data into a higher-dimensional space, where the relationship becomes linear.
+
+ * Polynomial Kernel: Transforms the data into a higher-dimensional space using polynomial functions.
+ * Radial Basis Function (RBF) Kernel: Uses a Gaussian function to map the data into a higher-dimensional space, where non-linear relationships can be better captured.
+
+**Graph example:**
+ ![Support Vector Regression](readmeImgs/supportvectorregression_graph.png)
