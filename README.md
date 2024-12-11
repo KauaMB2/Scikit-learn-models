@@ -345,3 +345,65 @@ Sometimes, the relationship between the input features and the output variable i
 
 **Graph example:**
  ![Support Vector Regression](readmeImgs/supportvectorregression_graph.png)
+
+**Code example:**
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.svm import SVR
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+# Step 1: Create a simple dataset
+# Here, we'll use a simple quadratic relationship with some noise
+X = np.random.uniform(1, 10, size=(100, 1))  # 100 random values between 1 and 10
+y = np.sin(X).ravel() + np.random.normal(0, 0.1, X.shape[0])  # Sine function with noise
+
+# Step 2: Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 3: Scale the input data (SVR is sensitive to the scale of features)
+sc_X = StandardScaler()
+sc_y = StandardScaler()
+
+X_train_scaled = sc_X.fit_transform(X_train)
+X_test_scaled = sc_X.transform(X_test)
+
+y_train_scaled = sc_y.fit_transform(y_train.reshape(-1, 1))
+y_test_scaled = sc_y.transform(y_test.reshape(-1, 1))
+
+# Step 4: Train the SVR model (using a linear kernel)
+svr_model = SVR(kernel='linear', C=1e3)  # Linear kernel and a high penalty for error (C)
+svr_model.fit(X_train_scaled, y_train_scaled.ravel())
+
+# Step 5: Make predictions on the test set
+y_pred_scaled = svr_model.predict(X_test_scaled)
+
+# Step 6: Inverse transform to get the original scale for predictions and true values
+y_pred = sc_y.inverse_transform(y_pred_scaled.reshape(-1, 1))
+y_test = sc_y.inverse_transform(y_test_scaled)
+
+# Step 7: Evaluate the model (using Mean Squared Error)
+mse = mean_squared_error(y_test, y_pred)
+print("Mean Squared Error (MSE):", mse)
+
+# Step 8: Visualize the results
+plt.figure(figsize=(10, 6))
+
+# Plot the original data points
+plt.scatter(X, y, color='gray', label='Original Data', alpha=0.5)
+
+# Plot the SVR predictions (using the training set)
+X_grid = np.linspace(min(X), max(X), 1000).reshape(-1, 1)  # High-resolution grid for smoother curve
+y_grid_scaled = svr_model.predict(sc_X.transform(X_grid))
+y_grid = sc_y.inverse_transform(y_grid_scaled.reshape(-1, 1))
+
+plt.plot(X_grid, y_grid, color='red', label='SVR Prediction (Linear Kernel)', lw=2)
+
+plt.title('Support Vector Regression with Linear Kernel')
+plt.xlabel('Input Feature (X)')
+plt.ylabel('Target Value (y)')
+plt.legend()
+plt.show()
+```
