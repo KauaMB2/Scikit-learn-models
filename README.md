@@ -419,9 +419,9 @@ A decision tree model is a supervised machine learning algorithm used for both c
  * Branches: The edges connecting nodes, representing the outcome of a decision (split).
 
 **Tree example:**
- ![Decision tree Regression](readmeImgs/decisiontreeregression_graph1.png)
+ ![Decision tree Regression 1](readmeImgs/decisiontreeregression_graph1.png)
 **Graph example:**
- ![Decision tree Regression](readmeImgs/decisiontreeregression_graph2.png)
+ ![Decision tree Regression 2](readmeImgs/decisiontreeregression_graph2.png)
 
 **Advantages of Decision Trees:**
  * Easy to Understand: The model is easy to interpret because it mimics human decision-making.
@@ -515,6 +515,11 @@ To solve some disadvantages that the decision tree model has, we can simply can 
 **Disadvantages:**
  * Computational Complexity: Training multiple trees increases computational requirements compared to a single decision tree.
  * Interpretability: While decision trees are easy to interpret, a random forest model is a "black-box" model, making it harder to interpret the final decision-making process.
+
+**Tree example:**
+ ![Decision tree Regression 1](readmeImgs/randomforestregression_graph1.png)
+**Graph example:**
+ ![Decision tree Regression 2](readmeImgs/randomforestregression_graph2.png)
 
 ```python
 # Import necessary libraries
