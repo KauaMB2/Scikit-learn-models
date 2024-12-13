@@ -11,7 +11,7 @@ import time
 def showPlot(XPoints, YPoints, XLine, YLine):
     plt.scatter(XPoints, YPoints, color='red')
     plt.plot(XLine, YLine, color='blue')
-    plt.title("Comparing real dots with the line built by the polinomial.")
+    plt.title("Comparing real dots with the line built by the SVR.")
     plt.xlabel('Experience in years')
     plt.ylabel('Salary')
     plt.show()

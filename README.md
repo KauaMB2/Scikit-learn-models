@@ -407,3 +407,63 @@ plt.ylabel('Target Value (y)')
 plt.legend()
 plt.show()
 ```
+
+**Decision tree**
+A decision tree model is a supervised machine learning algorithm used for both classification and regression tasks. It models decisions and their possible consequences, including chance events, resource costs, and utility.
+
+**Structure of a Decision Tree:**
+ * Root Node: Represents the entire dataset and the first decision point.
+ * Internal Nodes: Each internal node represents a decision based on a feature (variable), splitting the data into subsets.
+ * Leaf Nodes: The terminal nodes that represent the final outcome or class label in classification or a continuous value in regression.
+ * Branches: The edges connecting nodes, representing the outcome of a decision (split).
+
+**Tree example:**
+ ![Decision tree Regression](readmeImgs/decisiontreeregression_graph1.png)
+**Graph example:**
+ ![Decision tree Regression](readmeImgs/decisiontreeregression_graph2.png)
+
+**Code example:**
+```python
+# Import necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+from sklearn.tree import DecisionTreeClassifier, export_graphviz
+from sklearn.model_selection import train_test_split
+
+# Load the Iris dataset
+iris = datasets.load_iris()
+X = iris.data[:, :2]  # Using only the first two features for visualization (sepal length and sepal width)
+y = iris.target
+
+# Split the data into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Create a Decision Tree classifier
+clf = DecisionTreeClassifier(random_state=42)
+
+# Train the classifier
+clf.fit(X_train, y_train)
+
+# Export the trained decision tree as a .dot file
+export_graphviz(clf, out_file='tree.dot', feature_names=["Sepal Length", "Sepal Width"], class_names=iris.target_names)
+
+# Create a mesh grid to plot decision boundaries
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01),
+                     np.arange(y_min, y_max, 0.01))
+
+# Predict the class for each point in the mesh grid
+Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot the decision boundary
+plt.contourf(xx, yy, Z, alpha=0.4)
+plt.scatter(X[:, 0], X[:, 1], c=y, s=30, edgecolor='k')
+plt.xlabel('Sepal Length')
+plt.ylabel('Sepal Width')
+plt.title('Decision Tree Classifier - Decision Boundary')
+plt.show()
+```
+
