@@ -409,6 +409,7 @@ plt.show()
 ```
 
 **Decision tree**
+
 A decision tree model is a supervised machine learning algorithm used for both classification and regression tasks. It models decisions and their possible consequences, including chance events, resource costs, and utility.
 
 **Structure of a Decision Tree:**
@@ -421,6 +422,17 @@ A decision tree model is a supervised machine learning algorithm used for both c
  ![Decision tree Regression](readmeImgs/decisiontreeregression_graph1.png)
 **Graph example:**
  ![Decision tree Regression](readmeImgs/decisiontreeregression_graph2.png)
+
+**Advantages of Decision Trees:**
+ * Easy to Understand: The model is easy to interpret because it mimics human decision-making.
+ * No Feature Scaling Needed: Decision trees do not require normalization or scaling of the data.
+ * Can Handle Both Numerical and Categorical Data: It can handle both types of variables without the need for transformation.
+ * Non-Linear Relationships: Can capture complex non-linear relationships between features and target.
+
+**Disadvantages:**
+ * Overfitting: Decision trees can easily overfit the training data, especially if the tree is deep. This happens when the tree becomes too complex and starts capturing noise in the data rather than general patterns.
+ * Instability: Small changes in the data can result in a completely different structure for the tree.
+ * Greedy Algorithm: The decision tree is a greedy algorithm, meaning it makes the optimal decision at each node without considering the global optimal structure, which can sometimes lead to suboptimal models.
 
 **Code example:**
 ```python
@@ -466,4 +478,73 @@ plt.ylabel('Sepal Width')
 plt.title('Decision Tree Classifier - Decision Boundary')
 plt.show()
 ```
+To solve some disadvantages that the decision tree model has, we can simply can use the **Random Forest Regression** model
+
+**Random Forest Regression**
+
+**Random Forest Regression** is an ensemble learning method used for predicting a continuous value (regression task) by combining multiple decision trees. It is an extension of the Decision Tree model, where instead of using a single tree, multiple trees are built, and their outputs are aggregated to produce a more accurate and robust prediction.
+
+**Key Features of Random Forest Regression:**
+
+**Ensemble Learning:** A random forest builds multiple decision trees, typically trained on different random subsets of the training data, and combines their results to improve accuracy.
+
+**Bootstrap Aggregating (Bagging):** Each tree is trained on a random subset of the data, with replacement. This method is called bootstrapping, and it helps in reducing the variance and overfitting of individual decision trees.
+
+**Feature Randomness:** In addition to bootstrapping the data, random forests also introduce randomness at the feature level. When creating splits at each node, the algorithm selects a random subset of features rather than using all available features. This further reduces overfitting and increases diversity among the trees.
+
+**Averaging (for Regression):** For regression tasks, the predictions from all trees are averaged to produce the final prediction. This reduces the overall variance and helps in achieving better generalization than a single decision tree.
+
+**How Random Forest Regression Works:**
+
+**Training Multiple Trees:**
+ * Randomly select a subset of data points (with replacement) to train each tree (bootstrapping).
+ * For each tree, at each node, select a random subset of features and use the best feature from that subset to split the node.
+ * Continue splitting until a stopping criterion is met (e.g., maximum depth or minimum samples per leaf).
+
+**Prediction:**
+ * Once all trees are trained, each tree makes a prediction based on the input features.
+ * In regression, the predictions of all trees are averaged to give the final output.
+
+**Advantages:**
+ * Reduced Overfitting: By averaging multiple trees, random forests reduce the risk of overfitting that a single decision tree might suffer from.
+ * Better Accuracy: Since it combines multiple weak models (decision trees), the random forest often performs better than a single decision tree.
+ * Handles Large Datasets: Random forests can efficiently handle large datasets and high-dimensional feature spaces.
+ * Robust to Outliers: The model is less sensitive to outliers due to the averaging process.
+ * Feature Importance: Random forests can provide a measure of feature importance, helping to understand which features contribute the most to the predictions.
+
+**Disadvantages:**
+ * Computational Complexity: Training multiple trees increases computational requirements compared to a single decision tree.
+ * Interpretability: While decision trees are easy to interpret, a random forest model is a "black-box" model, making it harder to interpret the final decision-making process.
+
+```python
+# Import necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
+
+# Generate a synthetic dataset for regression
+X, y = make_regression(n_samples=100, n_features=1, noise=0.1, random_state=42)
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the Random Forest Regressor
+rf_regressor = RandomForestRegressor(n_estimators=100, random_state=42)
+rf_regressor.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = rf_regressor.predict(X_test)
+
+# Plot the results
+plt.scatter(X_test, y_test, color='blue', label='True values')
+plt.scatter(X_test, y_pred, color='red', label='Predicted values')
+plt.title('Random Forest Regression')
+plt.xlabel('Feature')
+plt.ylabel('Target')
+plt.legend()
+plt.show()
+```
+
 
