@@ -75,61 +75,88 @@ Continuous: These are values that can take any real number within a range. Conti
     * Weight (e.g., 150.5 pounds, 200.1 pounds)
     * Temperature (e.g., 32.5°C, 100.2°C)
 
-### Fit concept
-<u>In the context of the training of machine learning models</u>, the expression **"Fit"** refers to the process of training a model on a dataset. This involves the model learning the underlying patterns or relationships in the data. For instance, when you call the fit method on a machine learning model (e.g., LinearRegression, RandomForestClassifier), the model adjusts its parameters (like coefficients, weights, etc.) based on the data it is exposed to, <u>but in the context of preprocessing</u> and transformations (like scaling, normalization, or encoding), "fit" still refers to learning something from the data, but not in terms of model parameters. Instead, it means learning the necessary statistics or properties needed for the transformation. Example:
- - For scaling(with `StandardScaler`), "fit" learns the mean and standard deviation of the features in the training data.
- - For normalization (with `MinMaxScaler`), "fit" learns the minimum and maximum values of each feature.
-1. Training a model
+**Pre processing**
+# Understanding `fit`, `transform`, and Their Differences in Scikit-learn
+
+In Scikit-learn, the terms **`fit()`** and **`transform()`** are often used when working with data preprocessing and model training. These methods are integral in the process of preparing data and training machine learning models. Below, we will explain these methods in the context of several common classes used in Scikit-learn, specifically `LabelEncoder`, `StandardScaler`, and `SimpleImputer`.
+
+## 1. What is `fit()`?
+
+- **Definition**: The `fit()` method is used to compute the necessary statistics or parameters needed for a transformation. It **learns** from the input data and adapts the model to it.
+  
+- **In Context of Preprocessing**:
+  - **`LabelEncoder`**: When you call `fit()`, the `LabelEncoder` will find all the unique labels in the target data and build a mapping of each unique label to a corresponding integer. For example, if the labels are `['cat', 'dog', 'cat']`, `fit()` will learn that `cat` maps to 0 and `dog` maps to 1.
+  - **`StandardScaler`**: The `fit()` method calculates the mean and standard deviation for each feature (column). These statistics will be used later to scale the data.
+  - **`SimpleImputer`**: The `fit()` method computes the statistics required for imputation (e.g., the mean or median for numerical data) based on the non-missing values in each column. These statistics will be used to replace missing values.
+
+- **In Context of Training the Model**:
+  - For models like **Logistic Regression** or **Random Forest**, calling `fit()` on the model will train the model by learning the relationship between the features (X) and the target (y). The model adjusts its parameters (like weights or trees) to minimize the error on the training data.
+
+## 2. What is `transform()`?
+
+- **Definition**: The `transform()` method is used to apply the learned statistics or parameters (computed by `fit()`) to **transform the input data** into a new representation or format.
+
+- **In Context of Preprocessing**:
+  - **`LabelEncoder`**: After `fit()` has been applied, `transform()` will use the learned label-to-integer mapping to convert categorical labels into numerical values. For example, `['cat', 'dog', 'cat']` would be transformed into `[0, 1, 0]` based on the previously learned mapping.
+  - **`StandardScaler`**: After calculating the mean and standard deviation during `fit()`, the `transform()` method standardizes the features by subtracting the mean and dividing by the standard deviation. This scales the data to have a mean of 0 and a standard deviation of 1.
+  - **`SimpleImputer`**: After learning the statistics during `fit()`, `transform()` will replace the missing values in the data with the computed mean (or other strategy like median or mode) for each column.
+
+- **In Context of Training the Model**:
+  - After calling `fit()`, many machine learning models (e.g., **Logistic Regression**, **Support Vector Machines**) require you to call `predict()` to generate predictions on new data, but they don't require `transform()`. However, when using transformers like `StandardScaler` or `SimpleImputer`, calling `transform()` on new, unseen data applies the same transformations that were learned from the training set to the test data, ensuring consistency across the training and testing phases.
+
+## 3. The Difference Between `fit()` and `transform()`
+
+- **`fit()`** is used to learn or compute statistics from the data (e.g., mean, variance, unique labels).
+- **`transform()`** is used to actually modify the data based on the learned statistics (e.g., encode labels, scale features, or impute missing values).
+
+### In Detail:
+- **`fit()`** adapts a model or transformer to the data by learning necessary parameters, while **`transform()`** uses those parameters to convert or process the data.
+- **In practice**, you would use `fit()` once on the training data to learn the parameters (e.g., label mapping, scaling factors), then use `transform()` to apply those learned parameters to both the training and test data.
+
+## 4. Example Code with `LabelEncoder`, `StandardScaler`, and `SimpleImputer`
+
 ```python
-from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+import numpy as np
+import pandas as pd
+
 # Example data
-X_train = [[1, 2], [3, 4], [5, 6]]
-y_train = [5, 7, 9]
-model = LinearRegression()
-model.fit(X_train, y_train)  # Fit learns the best-fit line
-```
-2. Preprocessing
-```python
-from sklearn.preprocessing import StandardScaler
-data = [[1, 2], [3, 4], [5, 6]]
+X = pd.DataFrame({
+    'feature1': [1.2, np.nan, 3.4, 2.5, np.nan],
+    'feature2': [5.6, 7.8, 9.0, np.nan, 6.3]
+})
+y = pd.Series(['cat', 'dog', 'cat', 'dog', 'cat'])
+
+# 1. Label Encoding: Convert categorical labels to numeric
+label_encoder = LabelEncoder()
+y_encoded = label_encoder.fit_transform(y)  # fit() learns the unique labels; transform() converts them to integers
+
+# 2. Handle Missing Values with SimpleImputer
+imputer = SimpleImputer(strategy='mean')
+X_imputed = imputer.fit_transform(X)  # fit() calculates the mean for imputation; transform() applies it to X
+
+# 3. Standardize Features using StandardScaler
 scaler = StandardScaler()
-# Fit learns the mean and standard deviation
-scaler.fit(data)
+X_scaled = scaler.fit_transform(X_imputed)  # fit() computes mean and std; transform() scales the data
+
+# Final processed data
+print("Encoded Labels:", y_encoded)
+print("\nImputed and Scaled Features:\n", X_scaled)
 ```
-**Key distintions:**
-- **Model fitting** (e.g., `LinearRegression.fit()`) train the data.
-- **Preprocessing fitting** (e.g., `StandardScaler.fit()`) learns statistics from the
-data to apply transformations.
 
-### Transformation concept
-In scikit-learn, the **transform() method** is used to apply a transformation to data using parameters that were learned previously (usually during the fit step).
-
-**General Purpose of transform:**
-The transform method modifies the input data based on the parameters learned during the fit step.
+**Summary: **
+ * fit() in LabelEncoder learns the unique labels and prepares the transformation.
+ * fit() in SimpleImputer computes the mean of the features to replace missing values.
+ * fit() in StandardScaler computes the mean and standard deviation for each feature.
+ * transform() applies these learned transformations to the data to convert labels to integers, impute missing values, and scale features.
 
 **Common use cases of transform:**
  - Scaling: In the case of feature scaling (e.g., using `StandardScaler`), transform applies the scaling formula (using the mean and standard deviation learned during fit) to the data.
  - Encoding: For categorical encoding (e.g., using `OneHotEncoder`), transform converts the input features into the encoded format based on the learned mapping.
  - Dimensionality Reduction: In algorithms like PCA (Principal Component Analysis), transform reduces the dimensions of the data using the principal components learned during fit.
-```python
-from sklearn.preprocessing import OneHotEncoder
-# Example data
-data = [[1, 'A'], [2, 'B'], [3, 'C']
-encoder = OneHotEncoder()
-# Fit learns the categories
-encoder.fit(data)
-```
-```python
-### Example of using transform
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.preprocessing import StandardScaler
-data = [[1, 'A'], [2, 'B'], [3, 'C']]
-encoder = OneHotEncoder()
-# Fit learns the categories
-encoder.fit(data)
-# Transform applies the one-hot encoding
-encoded_data = encoder.transform(data)
-```
+ 
 ### One-hot encoder concept
 **One-hot encoding** is a technique used in machine learning to convert categorical variables into numerical variables that can be processed by machine learning algorithms. It works by creating a new binary feature for each category in the categorical variable. For example, if we have a categorical variable with three categories A, B, and C, the one-hot encoded version would be a binary vector [1, 0, 0] for category A, [0, 1, 0] for category B, and [0, 0, 1] for category C.
 The dummy variable trap is a situation that occurs when using dummy variables (also known as one-hot encoding) in regression models, which leads to multicollinearity. This can cause problems when trying to interpret or train a machine learning model, particularly in linear regression models.
@@ -600,3 +627,44 @@ for name, model in models.items():
     r2 = r2_score(y_test, y_pred)
     print(f"{name} - R² score: {r2:.4f}")
 ```
+
+**Logistic Regression**
+
+**Logistic Regression** is a statistical method used for **binary classification tasks**, though it can also be extended to multi-class classification. Despite the name, it is a linear model used for predicting probabilities that map to discrete class labels, typically 0 or 1. The goal of logistic regression is to model the probability of a certain class given the input features.
+
+**Key Concepts**
+
+1. **Linear Model**: Logistic regression attempts to find a linear relationship between the input features and the output class. It essentially fits a line (or hyperplane in higher dimensions) to the data. The model computes a weighted sum of the input features.
+
+2. **Sigmoid Function**: The linear combination of input features is passed through a sigmoid function (also called the logistic function), which transforms the output into a probability value between 0 and 1. The sigmoid function has the form:
+
+    ![Logistic regression formula](readmeImgs/logistic_regression.png)
+
+3. **Prediction**: The predicted output is a probability \( P(y=1|X) \) that the input features belong to class 1. A decision threshold (commonly 0.5) is applied to convert the probability into a class label (0 or 1). If the probability is greater than 0.5, the model predicts class 1; otherwise, it predicts class 0.
+
+4. **Cost Function**: The model is trained by minimizing a cost function, typically the log-loss (or cross-entropy loss), which measures how well the model's predicted probabilities match the actual class labels in the training data.
+
+**Code example:**
+```python
+# Step 1: Import the necessary libraries
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+# Step 2: Load the Iris dataset
+data = load_iris()
+X = data.data  # Features (sepal length, sepal width, petal length, petal width)
+y = (data.target == 0).astype(int)  # Binary classification (Class 0 vs. others)
+# Step 3: Split the data into training and testing sets (80% training, 20% testing)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Step 4: Initialize the Logistic Regression model
+model = LogisticRegression(max_iter=200)
+# Step 5: Train the model using the training data
+model.fit(X_train, y_train)
+# Step 6: Make predictions on the test data
+y_pred = model.predict(X_test)
+# Step 7: Evaluate the model using accuracy score
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+```
+
