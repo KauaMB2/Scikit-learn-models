@@ -1,8 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
-from sklearn.tree import DecisionTreeRegressor
 import preprocessing as pre
-from sklearn.tree import export_graphviz
 from sklearn.ensemble import RandomForestRegressor
 
 #timer

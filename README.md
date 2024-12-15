@@ -552,4 +552,51 @@ plt.legend()
 plt.show()
 ```
 
+**R2 score**
 
+R² score (R-squared) is a statistical measure used to evaluate the performance of a regression model. It indicates how well the model's predictions approximate the actual data. Specifically, it tells us the proportion of the variance in the dependent variable (the target or output) that is predictable from the independent variables (features or inputs).
+
+**Formula for R²:**
+
+ ![R² score formula](readmeImgs/r2_score_formula.svg)
+
+Where:
+
+𝑆𝑆residual is the sum of squared residuals (the squared differences between the observed values and the predicted values).
+
+SStotal is the total sum of squares (the squared differences between the observed values and their mean).
+
+Explanation: https://www.youtube.com/watch?v=-WlYqtSf2HA&list=PL-t7zzWJWPtzhZtI-bWWHFtCfxtjmBdIW&index=14
+
+```python
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import r2_score
+# Generate synthetic data
+np.random.seed(42)
+X = np.random.rand(100, 3)  # 100 samples, 3 features
+y = X @ np.array([3, 5, 7]) + np.random.randn(100) * 0.5  # Linear relationship with some noise
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Initialize models
+models = {
+    'Linear Regression': LinearRegression(),
+    'Decision Tree Regressor': DecisionTreeRegressor(random_state=42),
+    'Random Forest Regressor': RandomForestRegressor(random_state=42)
+}
+# Train models and calculate R² score
+for name, model in models.items():
+    # Train the model
+    model.fit(X_train, y_train)
+    
+    # Predict on the test set
+    y_pred = model.predict(X_test)
+    
+    # Compute R² score
+    r2 = r2_score(y_test, y_pred)
+    print(f"{name} - R² score: {r2:.4f}")
+```
